@@ -1,17 +1,11 @@
 class Neuron:
-    name = "default"
+    name = ""
     inputs = []
     weights = []
     output = 0
 
     def __init__(self, name):
-        self.name = name
-
-    def setWeight(self, newWeights):
-        self.weights = newWeights
-
-    def setInput(self, newInputs):
-        self.inputs = newInputs
+        self.name = str(name)
 
     def setOutput(self):
         tempSum = 0
@@ -24,3 +18,13 @@ class Neuron:
     def characteristic(x):
         from math import e
         return 1/(1 + e**(-1 * x))
+
+    def displayNeuronState(self):
+        print("---------------------------")
+        print("I am neuron named: " + self.name)
+        print("My inputs are: ")
+        print(self.inputs)
+        print("My weights are: ")
+        print(self.weights)
+        print("My output is: ")
+        print(self.output)
