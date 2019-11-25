@@ -9,8 +9,8 @@ class Neuron:
 
     def setOutput(self):
         tempSum = 0
-        for x in self.inputs:
-            tempSum = tempSum + x * self.weights[self.inputs.index(x)]
+        for inputData in self.inputs:
+            tempSum = tempSum + inputData * self.weights[self.inputs.index(inputData)]
         tempSum = self.characteristic(tempSum)
         self.output = tempSum
 

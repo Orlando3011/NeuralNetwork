@@ -1,4 +1,4 @@
-from src.Neuron import Neuron
+from src.neuron.Neuron import Neuron
 import random as rd
 
 

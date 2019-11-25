@@ -1,5 +1,5 @@
-from src.NeuronFactory import NeuronFactory
-from src.Network import Network
+from src.neuron.NeuronFactory import NeuronFactory
+from src.network.Network import Network
 
 
 class NetworkFactory:
