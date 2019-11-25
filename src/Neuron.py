@@ -1,8 +1,11 @@
 class Neuron:
-    def __init__(self, weights, inputs, output):
-        self.inputs = inputs
-        self.weights = weights
-        self.output = output
+    name = "default"
+    inputs = []
+    weights = []
+    output = 0
+
+    def __init__(self, name):
+        self.name = name
 
     def setWeight(self, newWeights):
         self.weights = newWeights
