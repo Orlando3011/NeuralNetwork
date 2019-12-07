@@ -1,3 +1,4 @@
+from src.dataLoading.dataManager import DataManager
 from src.network.NetworkFactory import NetworkFactory
 from src.network.NetworkService import NetworkService
 
@@ -6,8 +7,10 @@ networkService = NetworkService(networkFactory.createNetwork())
 
 networkService.network.displayNetworkState()
 
-print("\n\nLet's test network with this data row: [4, 0, 71, 0, 0.26, 9, 4.6, 14, 1]\n\n")
+dataManager = DataManager()
 
-networkService.solveTask([4, 0, 71, 0, 0.26, 9, 4.6, 14, 1])
+networkService.learn(dataManager.dataList)
+
+print("\n\nLet's test network with learning data:\n\n")
 
 networkService.network.displayNetworkState()

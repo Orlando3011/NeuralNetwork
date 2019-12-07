@@ -40,6 +40,5 @@ class NetworkFactory:
     @staticmethod
     def fillOutputLayer(network):
         factory = NeuronFactory()
-        network.outputLayer.append(factory.createOutputNeuron("alive"))
-        network.outputLayer.append(factory.createOutputNeuron("notAlive"))
+        network.outputLayer.append(factory.createOutputNeuron("output"))
 

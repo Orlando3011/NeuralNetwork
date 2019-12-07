@@ -22,7 +22,19 @@ class NetworkService:
                     self.network.hiddenLayer[self.network.hiddenLayer.index(hiddenNeuron)].output
             outputNeuron.setOutput()
 
+    def checkOutput(self, correctAnswer):
+        for outputNeuron in self.network.outputLayer:
+            if correctAnswer == 1:
+                outputNeuron.accumulatedError = outputNeuron.accumulatedError + (correctAnswer - outputNeuron.output)
+            else:
+                outputNeuron.accumulatedError = outputNeuron.accumulatedError + correctAnswer
+
     def solveTask(self, data):
         self.loadData(data)
         self.proceedData()
         self.finishTask()
+        self.checkOutput(data[9])
+
+    def learn(self, dataList):
+        for data in dataList:
+            self.solveTask(data)

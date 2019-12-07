@@ -3,6 +3,7 @@ class Neuron:
     inputs = []
     weights = []
     output = 0
+    accumulatedError = 0
 
     def __init__(self, name):
         self.name = str(name)
@@ -28,3 +29,6 @@ class Neuron:
         print(self.weights)
         print("My output is: ")
         print(self.output)
+        if self.name == "output":
+            print("My accumulated error is: ")
+            print(self.accumulatedError)
