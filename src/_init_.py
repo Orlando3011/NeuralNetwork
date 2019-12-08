@@ -1,16 +1,8 @@
-from src.dataLoading.dataManager import DataManager
-from src.network.NetworkFactory import NetworkFactory
-from src.network.NetworkService import NetworkService
+from src.learning.evolutionManager import EvolutionManager
 
-networkFactory = NetworkFactory()
-networkService = NetworkService(networkFactory.createNetwork())
 
-networkService.network.displayNetworkState()
+evolutionManager = EvolutionManager(4, 100, 0.05)
+evolutionManager.initializePopulation()
 
-dataManager = DataManager()
-
-networkService.learn(dataManager.dataList)
-
-print("\n\nLet's test network with learning data:\n\n")
-
-networkService.network.displayNetworkState()
+for network in evolutionManager.population:
+    network.displayNetworkState()

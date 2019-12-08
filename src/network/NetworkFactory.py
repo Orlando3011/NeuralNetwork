@@ -14,6 +14,7 @@ class NetworkFactory:
     @staticmethod
     def fillInputLayer(network):
         factory = NeuronFactory()
+        network.inputLayer = []
         network.inputLayer.append(factory.createInputNeuron("survival"))
         network.inputLayer.append(factory.createInputNeuron("still_alive"))
         network.inputLayer.append(factory.createInputNeuron("age_at_heart_attack"))
@@ -27,6 +28,7 @@ class NetworkFactory:
     @staticmethod
     def fillHiddenLayer(network):
         factory = NeuronFactory()
+        network.hiddenLayer = []
         network.hiddenLayer.append(factory.createOutputNeuron("hidden1"))
         network.hiddenLayer.append(factory.createHiddenNeuron("hidden2"))
         network.hiddenLayer.append(factory.createHiddenNeuron("hidden3"))
@@ -40,5 +42,6 @@ class NetworkFactory:
     @staticmethod
     def fillOutputLayer(network):
         factory = NeuronFactory()
+        network.outputLayer = []
         network.outputLayer.append(factory.createOutputNeuron("output"))
 

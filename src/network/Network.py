@@ -2,6 +2,15 @@ class Network:
     inputLayer = []
     hiddenLayer = []
     outputLayer = []
+    weightsVector = []
+
+    def setWeightsVector(self):
+        for neuron in self.inputLayer:
+            self.weightsVector.extend(neuron.weights)
+        for neuron in self.hiddenLayer:
+            self.weightsVector.extend(neuron.weights)
+        for neuron in self.outputLayer:
+            self.weightsVector.extend(neuron.weights)
 
     def displayInputLayer(self):
         for neuron in self.inputLayer:
