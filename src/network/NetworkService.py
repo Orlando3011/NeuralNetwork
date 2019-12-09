@@ -1,9 +1,10 @@
 class NetworkService:
 
     @staticmethod
-    def loadData(data, network):
+    def loadData(network, data):
         for inputNeuron in network.inputLayer:
-            inputNeuron.inputs[0] = data[network.inputLayer.index(inputNeuron)]
+            inputNeuron.inputs[0] = data[network.inputLayer.index(inputNeuron) + 1]
+            # +1 to avoid adding id column to the network
             inputNeuron.setOutput()
 
     @staticmethod
@@ -28,14 +29,15 @@ class NetworkService:
             if correctAnswer == 1:
                 outputNeuron.accumulatedError = outputNeuron.accumulatedError + (correctAnswer - outputNeuron.output)
             else:
-                outputNeuron.accumulatedError = outputNeuron.accumulatedError + correctAnswer
+                outputNeuron.accumulatedError = outputNeuron.accumulatedError + outputNeuron.output
 
     def solveTask(self, network, data):
         self.loadData(network, data)
         self.proceedData(network)
         self.finishTask(network)
-        self.checkOutput(network, data[9])
 
     def learn(self, network, dataList):
+        network.resetError()
         for data in dataList:
             self.solveTask(network, data)
+            self.checkOutput(network, data[10])

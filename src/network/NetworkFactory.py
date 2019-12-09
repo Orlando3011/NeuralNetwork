@@ -9,6 +9,7 @@ class NetworkFactory:
         self.fillInputLayer(network)
         self.fillHiddenLayer(network)
         self.fillOutputLayer(network)
+        network.setWeightsVector()
         return network
 
     @staticmethod

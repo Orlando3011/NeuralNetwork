@@ -1,8 +1,7 @@
+from src.dataLoading.dataManager import DataManager
 from src.learning.evolutionManager import EvolutionManager
 
+dataManager = DataManager("learningData.txt")
 
-evolutionManager = EvolutionManager(4, 100, 0.05)
-evolutionManager.initializePopulation()
-
-for network in evolutionManager.population:
-    network.displayNetworkState()
+evolutionManager = EvolutionManager(100, 1000, 0.01)
+evolutionManager.proceedAlgorithm(dataManager.dataList)

@@ -24,6 +24,10 @@ class Network:
         for neuron in self.outputLayer:
             neuron.displayNeuronState()
 
+    def resetError(self):
+        for neuron in self.outputLayer:
+            neuron.accumulatedError = 0
+
     def displayNetworkState(self):
         print("\nI am neural network, that works on echocardiogram dataset.\n-----------------------\n" +
               "My input neuron layer looks like: \n")
