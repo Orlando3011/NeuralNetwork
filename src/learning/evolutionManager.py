@@ -20,6 +20,8 @@ class EvolutionManager:
             for network in self.population:
                 networkService.learn(network, dataList)
             self.printBestInstanceError()
+            print("Mean of the population is:")
+            print(self.meanOfPopulation())
             print("-----------------------")
             self.crossover()
             counter = counter + 1
@@ -92,19 +94,19 @@ class EvolutionManager:
                 rd = random.random()
                 if rd < self.mutationChance:
                     offspring.inputLayer[offspring.inputLayer.index(neuron)].weights[neuron.weights.index(weight)]\
-                        = random.random()
+                        = random.randrange(-5, 5)
         for neuron in offspring.hiddenLayer:
             for weight in neuron.weights:
                 rd = random.random()
                 if rd < self.mutationChance:
                     offspring.hiddenLayer[offspring.hiddenLayer.index(neuron)].weights[neuron.weights.index(weight)]\
-                        = random.random()
+                        = random.randrange(-5, 5)
         for neuron in offspring.outputLayer:
             for weight in neuron.weights:
                 rd = random.random()
                 if rd < self.mutationChance:
                     offspring.outputLayer[offspring.outputLayer.index(neuron)].weights[neuron.weights.index(weight)]\
-                        = random.random()
+                        = random.randrange(-5, 5)
         return offspring
 
     def getBestInstance(self):
@@ -126,3 +128,10 @@ class EvolutionManager:
     def resetInstancesErrors(self):
         for instance in self.population:
             instance.resetError()
+
+    def meanOfPopulation(self):
+        mean = 0
+        for instance in self.population:
+            mean = mean + instance.outputLayer[0].accumulatedError
+        mean = mean / len(self.population)
+        return mean

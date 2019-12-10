@@ -17,7 +17,7 @@ class NeuronFactory:
         neuron.inputs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         neuron.weights = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         for x in neuron.weights:
-            neuron.weights[neuron.weights.index(x)] = rd.random()
+            neuron.weights[neuron.weights.index(x)] = rd.randrange(-5, 5)
         return neuron
 
     @staticmethod
@@ -26,5 +26,5 @@ class NeuronFactory:
         neuron.inputs = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         neuron.weights = [0, 0, 0, 0, 0, 0, 0, 0, 0]
         for x in neuron.weights:
-            neuron.weights[neuron.weights.index(x)] = rd.random()
+            neuron.weights[neuron.weights.index(x)] = rd.randrange(-5, 5)
         return neuron
