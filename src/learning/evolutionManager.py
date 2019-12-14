@@ -37,8 +37,17 @@ class EvolutionManager:
     def crossover(self):
         counter = 0
         crossoverGeneration = []
-        while counter < self.populationSize:
-            crossoverGeneration.append(self.breed())
+        bestInstance = self.getBestInstance()
+        crossoverGeneration.append(bestInstance)
+        self.population.remove(bestInstance)
+        secondBestInstance = self.getBestInstance()
+        crossoverGeneration.append(secondBestInstance)
+        self.population.append(bestInstance)
+        while counter < (self.populationSize - 2)/ 2:
+            offspring = self.breed()
+            for instance in offspring:
+                instance = self.mutate(instance)
+                crossoverGeneration.append(instance)
             counter = counter + 1
         self.population = crossoverGeneration
 
@@ -55,59 +64,67 @@ class EvolutionManager:
                 secondCandidate = candidate
 
         offspring = self.makeOffspring(firstCandidate, secondCandidate)
-        offspring = self.mutate(offspring)
-        offspring.setWeightsVector()
         return offspring
 
     @staticmethod
     def makeOffspring(firstCandidate, secondCandidate):
         offspring = firstCandidate
-        for neuron in offspring.inputLayer:
-            secondNeuron = secondCandidate.inputLayer[offspring.inputLayer.index(neuron)]
-            for weight in neuron.weights:
+        secondOffspring = secondCandidate
+        neuronCounter = 0
+        weightCounter = 0
+        while neuronCounter < len(offspring.inputLayer):
+            while weightCounter < len(offspring.inputLayer[neuronCounter].weights):
                 rd = random.random()
                 if rd > 0.5:
-                    substituteWeight = secondNeuron.weights[neuron.weights.index(weight)]
-                    offspring.inputLayer[offspring.inputLayer.index(neuron)].weights[neuron.weights.index(weight)] \
-                        = substituteWeight
-        for neuron in offspring.hiddenLayer:
-            secondNeuron = secondCandidate.hiddenLayer[offspring.hiddenLayer.index(neuron)]
-            for weight in neuron.weights:
+                    firstWeight = offspring.inputLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondOffspring.inputLayer[neuronCounter].weights[weightCounter]
+                    offspring.inputLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondOffspring.inputLayer[neuronCounter].weights[weightCounter] = firstWeight
+                weightCounter = weightCounter + 1
+            weightCounter = 0
+            neuronCounter = neuronCounter + 1
+        neuronCounter = 0
+        while neuronCounter < len(offspring.hiddenLayer):
+            while weightCounter < len(offspring.hiddenLayer[neuronCounter].weights):
                 rd = random.random()
                 if rd > 0.5:
-                    substituteWeight = secondNeuron.weights[neuron.weights.index(weight)]
-                    offspring.hiddenLayer[offspring.hiddenLayer.index(neuron)].weights[neuron.weights.index(weight)] \
-                        = substituteWeight
-        for neuron in offspring.outputLayer:
-            secondNeuron = secondCandidate.outputLayer[offspring.outputLayer.index(neuron)]
-            for weight in neuron.weights:
+                    firstWeight = offspring.hiddenLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondOffspring.hiddenLayer[neuronCounter].weights[weightCounter]
+                    offspring.hiddenLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondOffspring.hiddenLayer[neuronCounter].weights[weightCounter] = firstWeight
+                weightCounter = weightCounter + 1
+            weightCounter = 0
+            neuronCounter = neuronCounter + 1
+        neuronCounter = 0
+        while neuronCounter < len(offspring.outputLayer):
+            while weightCounter < len(offspring.outputLayer[neuronCounter].weights):
                 rd = random.random()
                 if rd > 0.5:
-                    substituteWeight = secondNeuron.weights[neuron.weights.index(weight)]
-                    offspring.outputLayer[offspring.outputLayer.index(neuron)].weights[neuron.weights.index(weight)] \
-                        = substituteWeight
-        return offspring
+                    firstWeight = offspring.outputLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondOffspring.outputLayer[neuronCounter].weights[weightCounter]
+                    offspring.outputLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondOffspring.outputLayer[neuronCounter].weights[weightCounter] = firstWeight
+                weightCounter = weightCounter + 1
+            weightCounter = 0
+            neuronCounter = neuronCounter + 1
+        offspringList = [offspring, secondOffspring]
+        return offspringList
 
-    def mutate(self, offspring):
-        for neuron in offspring.inputLayer:
-            for weight in neuron.weights:
-                rd = random.random()
-                if rd < self.mutationChance:
-                    offspring.inputLayer[offspring.inputLayer.index(neuron)].weights[neuron.weights.index(weight)]\
-                        = random.randrange(-5, 5)
-        for neuron in offspring.hiddenLayer:
-            for weight in neuron.weights:
-                rd = random.random()
-                if rd < self.mutationChance:
-                    offspring.hiddenLayer[offspring.hiddenLayer.index(neuron)].weights[neuron.weights.index(weight)]\
-                        = random.randrange(-5, 5)
-        for neuron in offspring.outputLayer:
-            for weight in neuron.weights:
-                rd = random.random()
-                if rd < self.mutationChance:
-                    offspring.outputLayer[offspring.outputLayer.index(neuron)].weights[neuron.weights.index(weight)]\
-                        = random.randrange(-5, 5)
-        return offspring
+    def mutate(self, network):
+        rd = random.random()
+        if rd <= self.mutationChance:
+            rd = random.random()
+            if rd >= 94:
+                weightId = random.randint(0, network.outputLayer[0].weights)
+                network.outputLayer[0].weights[weightId] = random.randrange(-5, 5)
+            if 46 < rd < 94:
+                weightId = random.randint(0, (len(network.hiddenLayer[0].weights) - 1))
+                neuronId = random.randint(0, (len(network.hiddenLayer) - 1))
+                network.hiddenLayer[neuronId].weights[weightId] = random.randrange(-5, 5)
+            else:
+                neuronId = random.randint(0, (len(network.inputLayer) - 1))
+                network.hiddenLayer[neuronId].weights[0] = random.randrange(-5, 5)
+        return network
 
     def getBestInstance(self):
         bestInstance = self.population[0]
