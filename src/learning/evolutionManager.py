@@ -13,18 +13,24 @@ class EvolutionManager:
         self.mutationChance = mutationChance
 
     def proceedAlgorithm(self, dataList):
+        meanOfErrors = []
+        minimumError = []
+        outputData = [meanOfErrors, minimumError]
         self.initializePopulation()
         networkService = NetworkService()
+
         counter = 0
         while counter < self.generationsNumber:
             for network in self.population:
                 networkService.learn(network, dataList)
-            self.printBestInstanceError()
-            print("Mean of the population is:")
-            print(self.meanOfPopulation())
-            print("-----------------------")
+            minimumError.append(self.getBestInstanceError())
+            meanOfErrors.append(self.meanOfPopulation())
             self.crossover()
             counter = counter + 1
+            msg = "Generation no. " + str(counter)
+            print(msg)
+        print("\n--------------------------------\n")
+        return outputData
 
     def initializePopulation(self):
         counter = 0
@@ -43,7 +49,7 @@ class EvolutionManager:
         secondBestInstance = self.getBestInstance()
         crossoverGeneration.append(secondBestInstance)
         self.population.append(bestInstance)
-        while counter < (self.populationSize - 2)/ 2:
+        while counter < (self.populationSize - 2) / 2:
             offspring = self.breed()
             for instance in offspring:
                 instance = self.mutate(instance)
@@ -137,10 +143,9 @@ class EvolutionManager:
         for instance in self.population:
             print(instance.outputLayer[0].accumulatedError)
 
-    def printBestInstanceError(self):
+    def getBestInstanceError(self):
         bestInstance = self.getBestInstance()
-        print("The best instance of this generation has error of value: ")
-        print(bestInstance.outputLayer[0].accumulatedError)
+        return bestInstance.outputLayer[0].accumulatedError
 
     def resetInstancesErrors(self):
         for instance in self.population:
