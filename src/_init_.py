@@ -1,10 +1,12 @@
 from src.dataLoading.dataManager import DataManager
 from src.learning.evolutionManager import EvolutionManager
+from src.networkSaving.NetworkSavingService import NetworkSavingService
 from src.plotting.plottingService import PlottingService
 
 dataManager = DataManager("learningData.txt")
 
-evolutionManager = EvolutionManager(500, 30, 0.2)
+evolutionManager = EvolutionManager(100, 30, 0.2)
+networkSavingService = NetworkSavingService()
 outputData = evolutionManager.proceedAlgorithm(dataManager.dataList)
 
 plottingService = PlottingService()

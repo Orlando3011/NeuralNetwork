@@ -122,14 +122,14 @@ class EvolutionManager:
             rd = random.random()
             if rd >= 94:
                 weightId = random.randint(0, network.outputLayer[0].weights)
-                network.outputLayer[0].weights[weightId] = random.randrange(-5, 5)
+                network.outputLayer[0].weights[weightId] = random.uniform(-5, 5)
             if 46 < rd < 94:
                 weightId = random.randint(0, (len(network.hiddenLayer[0].weights) - 1))
                 neuronId = random.randint(0, (len(network.hiddenLayer) - 1))
-                network.hiddenLayer[neuronId].weights[weightId] = random.randrange(-5, 5)
+                network.hiddenLayer[neuronId].weights[weightId] = random.uniform(-5, 5)
             else:
                 neuronId = random.randint(0, (len(network.inputLayer) - 1))
-                network.hiddenLayer[neuronId].weights[0] = random.randrange(-5, 5)
+                network.inputLayer[neuronId].weights[0] = random.uniform(-5, 5)
         return network
 
     def getBestInstance(self):
