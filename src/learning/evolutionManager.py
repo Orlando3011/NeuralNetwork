@@ -2,6 +2,7 @@ import random
 
 from src.network.NetworkFactory import NetworkFactory
 from src.network.NetworkService import NetworkService
+from src.networkSaving.NetworkSavingService import NetworkSavingService
 
 
 class EvolutionManager:
@@ -12,12 +13,13 @@ class EvolutionManager:
         self.generationsNumber = generationsNumber
         self.mutationChance = mutationChance
 
-    def proceedAlgorithm(self, dataList):
+    def proceedAlgorithm(self, dataList, fileName):
         meanOfErrors = []
         minimumError = []
         outputData = [meanOfErrors, minimumError]
         self.initializePopulation()
         networkService = NetworkService()
+        networkSavingService = NetworkSavingService()
 
         counter = 0
         while counter < self.generationsNumber:
@@ -30,6 +32,7 @@ class EvolutionManager:
             msg = "Generation no. " + str(counter)
             print(msg)
         print("\n--------------------------------\n")
+        networkSavingService.saveNetworkToFile(self.getBestInstance(), fileName)
         return outputData
 
     def initializePopulation(self):
