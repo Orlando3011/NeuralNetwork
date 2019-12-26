@@ -25,13 +25,22 @@ class EvolutionManager:
         while counter < self.generationsNumber:
             for network in self.population:
                 networkService.learn(network, dataList)
+
+            bestInstances = self.getTwoBestInstances()
+            for network in bestInstances:
+                networkService.learn(network, dataList)
+
+            msg = "Generation no. " + str(counter)
+            print(msg)
+            bestInstances = self.getTwoBestInstances()
+            print("Best instances: ")
+            print(bestInstances[0].outputLayer[0].accumulatedError)
+            print(bestInstances[1].outputLayer[0].accumulatedError)
             minimumError.append(self.getBestInstanceError())
             meanOfErrors.append(self.meanOfPopulation())
             self.crossover()
             counter = counter + 1
-            msg = "Generation no. " + str(counter)
-            print(msg)
-        print("\n--------------------------------\n")
+            print("==============")
         networkSavingService.saveNetworkToFile(self.getBestInstance(), fileName)
         return outputData
 
@@ -44,24 +53,20 @@ class EvolutionManager:
             counter = counter + 1
 
     def crossover(self):
-        counter = 0
-        crossoverGeneration = []
-        bestInstance = self.getBestInstance()
-        crossoverGeneration.append(bestInstance)
-        self.population.remove(bestInstance)
-        secondBestInstance = self.getBestInstance()
-        crossoverGeneration.append(secondBestInstance)
-        self.population.append(bestInstance)
-        while counter < (self.populationSize - 2) / 2:
+        tmpPopulation = self.getTwoBestInstances()
+        while len(tmpPopulation) < self.populationSize:
             offspring = self.breed()
             for instance in offspring:
                 instance = self.mutate(instance)
-                crossoverGeneration.append(instance)
-            counter = counter + 1
-        self.population = crossoverGeneration
+                tmpPopulation.append(instance)
+        self.population = tmpPopulation
 
     def breed(self):
-        candidates = random.choices(self.population, k=6)
+        tmpPopulation = self.population
+        randomList = random.sample(range(1, len(tmpPopulation)), 6)
+        candidates = []
+        for element in randomList:
+            candidates.append(tmpPopulation[element])
         firstCandidate = candidates[0]
         for candidate in candidates:
             if candidate.outputLayer[0].accumulatedError < firstCandidate.outputLayer[0].accumulatedError:
@@ -77,46 +82,44 @@ class EvolutionManager:
 
     @staticmethod
     def makeOffspring(firstCandidate, secondCandidate):
-        offspring = firstCandidate
-        secondOffspring = secondCandidate
         neuronCounter = 0
         weightCounter = 0
-        while neuronCounter < len(offspring.inputLayer):
-            while weightCounter < len(offspring.inputLayer[neuronCounter].weights):
+        while neuronCounter < len(firstCandidate.inputLayer):
+            while weightCounter < len(firstCandidate.inputLayer[neuronCounter].weights):
                 rd = random.random()
                 if rd > 0.5:
-                    firstWeight = offspring.inputLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondOffspring.inputLayer[neuronCounter].weights[weightCounter]
-                    offspring.inputLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondOffspring.inputLayer[neuronCounter].weights[weightCounter] = firstWeight
+                    firstWeight = firstCandidate.inputLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondCandidate.inputLayer[neuronCounter].weights[weightCounter]
+                    firstCandidate.inputLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondCandidate.inputLayer[neuronCounter].weights[weightCounter] = firstWeight
                 weightCounter = weightCounter + 1
             weightCounter = 0
             neuronCounter = neuronCounter + 1
         neuronCounter = 0
-        while neuronCounter < len(offspring.hiddenLayer):
-            while weightCounter < len(offspring.hiddenLayer[neuronCounter].weights):
+        while neuronCounter < len(firstCandidate.hiddenLayer):
+            while weightCounter < len(firstCandidate.hiddenLayer[neuronCounter].weights):
                 rd = random.random()
                 if rd > 0.5:
-                    firstWeight = offspring.hiddenLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondOffspring.hiddenLayer[neuronCounter].weights[weightCounter]
-                    offspring.hiddenLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondOffspring.hiddenLayer[neuronCounter].weights[weightCounter] = firstWeight
+                    firstWeight = firstCandidate.hiddenLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondCandidate.hiddenLayer[neuronCounter].weights[weightCounter]
+                    firstCandidate.hiddenLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondCandidate.hiddenLayer[neuronCounter].weights[weightCounter] = firstWeight
                 weightCounter = weightCounter + 1
             weightCounter = 0
             neuronCounter = neuronCounter + 1
         neuronCounter = 0
-        while neuronCounter < len(offspring.outputLayer):
-            while weightCounter < len(offspring.outputLayer[neuronCounter].weights):
+        while neuronCounter < len(firstCandidate.outputLayer):
+            while weightCounter < len(firstCandidate.outputLayer[neuronCounter].weights):
                 rd = random.random()
                 if rd > 0.5:
-                    firstWeight = offspring.outputLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondOffspring.outputLayer[neuronCounter].weights[weightCounter]
-                    offspring.outputLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondOffspring.outputLayer[neuronCounter].weights[weightCounter] = firstWeight
+                    firstWeight = firstCandidate.outputLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondCandidate.outputLayer[neuronCounter].weights[weightCounter]
+                    firstCandidate.outputLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondCandidate.outputLayer[neuronCounter].weights[weightCounter] = firstWeight
                 weightCounter = weightCounter + 1
             weightCounter = 0
             neuronCounter = neuronCounter + 1
-        offspringList = [offspring, secondOffspring]
+        offspringList = [firstCandidate, secondCandidate]
         return offspringList
 
     def mutate(self, network):
@@ -124,7 +127,7 @@ class EvolutionManager:
         if rd <= self.mutationChance:
             rd = random.random()
             if rd >= 94:
-                weightId = random.randint(0, network.outputLayer[0].weights)
+                weightId = random.randint(0, len(network.outputLayer[0].weights) - 1)
                 network.outputLayer[0].weights[weightId] = random.uniform(-5, 5)
             if 46 < rd < 94:
                 weightId = random.randint(0, (len(network.hiddenLayer[0].weights) - 1))
@@ -160,3 +163,27 @@ class EvolutionManager:
             mean = mean + instance.outputLayer[0].accumulatedError
         mean = mean / len(self.population)
         return mean
+
+    def getTwoBestInstances(self):
+        tmpPopulation = self.population
+        firstInstance = tmpPopulation[0]
+
+        for instance in tmpPopulation:
+            if instance.outputLayer[0].accumulatedError < firstInstance.outputLayer[0].accumulatedError:
+                firstInstance = instance
+
+        bestCouple = [firstInstance]
+        tmpPopulation.remove(firstInstance)
+        secondInstance = tmpPopulation[0]
+
+        for instance in tmpPopulation:
+            if instance.outputLayer[0].accumulatedError < secondInstance.outputLayer[0].accumulatedError:
+                secondInstance = instance
+        bestCouple.append(secondInstance)
+        tmpPopulation.insert(0, firstInstance)
+        return bestCouple
+
+
+
+
+

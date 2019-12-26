@@ -1,0 +1,75 @@
+    def crossover(self):
+        counter = 0
+        crossoverGeneration = []
+        bestInstance = self.getBestInstance()
+        crossoverGeneration.append(bestInstance)
+        self.population.remove(bestInstance)
+        secondBestInstance = self.getBestInstance()
+        crossoverGeneration.append(secondBestInstance)
+        self.population.append(bestInstance)
+        while counter < (self.populationSize - 2) / 2:
+            offspring = self.breed()
+            for instance in offspring:
+                instance = self.mutate(instance)
+                crossoverGeneration.append(instance)
+            counter = counter + 1
+        self.population = crossoverGeneration
+
+    def breed(self):
+        candidates = random.choices(self.population, k=6)
+        firstCandidate = candidates[0]
+        for candidate in candidates:
+            if candidate.outputLayer[0].accumulatedError < firstCandidate.outputLayer[0].accumulatedError:
+                firstCandidate = candidate
+        candidates.remove(firstCandidate)
+        secondCandidate = candidates[0]
+        for candidate in candidates:
+            if candidate.outputLayer[0].accumulatedError < secondCandidate.outputLayer[0].accumulatedError:
+                secondCandidate = candidate
+
+        offspring = self.makeOffspring(firstCandidate, secondCandidate)
+        return offspring
+
+    @staticmethod
+    def makeOffspring(firstCandidate, secondCandidate):
+        offspring = firstCandidate
+        secondOffspring = secondCandidate
+        neuronCounter = 0
+        weightCounter = 0
+        while neuronCounter < len(offspring.inputLayer):
+            while weightCounter < len(offspring.inputLayer[neuronCounter].weights):
+                rd = random.random()
+                if rd > 0.5:
+                    firstWeight = offspring.inputLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondOffspring.inputLayer[neuronCounter].weights[weightCounter]
+                    offspring.inputLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondOffspring.inputLayer[neuronCounter].weights[weightCounter] = firstWeight
+                weightCounter = weightCounter + 1
+            weightCounter = 0
+            neuronCounter = neuronCounter + 1
+        neuronCounter = 0
+        while neuronCounter < len(offspring.hiddenLayer):
+            while weightCounter < len(offspring.hiddenLayer[neuronCounter].weights):
+                rd = random.random()
+                if rd > 0.5:
+                    firstWeight = offspring.hiddenLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondOffspring.hiddenLayer[neuronCounter].weights[weightCounter]
+                    offspring.hiddenLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondOffspring.hiddenLayer[neuronCounter].weights[weightCounter] = firstWeight
+                weightCounter = weightCounter + 1
+            weightCounter = 0
+            neuronCounter = neuronCounter + 1
+        neuronCounter = 0
+        while neuronCounter < len(offspring.outputLayer):
+            while weightCounter < len(offspring.outputLayer[neuronCounter].weights):
+                rd = random.random()
+                if rd > 0.5:
+                    firstWeight = offspring.outputLayer[neuronCounter].weights[weightCounter]
+                    secondWeight = secondOffspring.outputLayer[neuronCounter].weights[weightCounter]
+                    offspring.outputLayer[neuronCounter].weights[weightCounter] = secondWeight
+                    secondOffspring.outputLayer[neuronCounter].weights[weightCounter] = firstWeight
+                weightCounter = weightCounter + 1
+            weightCounter = 0
+            neuronCounter = neuronCounter + 1
+        offspringList = [offspring, secondOffspring]
+        return offspringList
