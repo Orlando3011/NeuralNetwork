@@ -10,10 +10,10 @@ class NetworkSavingService:
     def makeNetworkFromFile(network, fileName):
         with open(fileName) as f:
             networkVector = f.readlines()
+        newVector = []
         for item in networkVector:
-            length = len(item)
-            newItem = item[0: length - 3]
-            networkVector[networkVector.index(item)] = newItem
-        network.weightsVector = networkVector
+            newItem = float(item[0: len(item) - 3])
+            newVector.append(newItem)
+        network.weightsVector = newVector
         network.updateNetwork()
         return network

@@ -14,35 +14,27 @@ class Network:
             self.weightsVector.extend(neuron.weights)
 
     def updateNetwork(self):
-        inputLayerLen = len(self.inputLayer)
-        hiddenLayerLen = len(self.hiddenLayer)
-        outputLayerLen = len(self.outputLayer)
+        inputLayerWeights = len(self.inputLayer)
+        hiddenLayerWeights = (inputLayerWeights + (len(self.hiddenLayer) * len(self.inputLayer)))
+        outputLayerWeights = hiddenLayerWeights + (len(self.hiddenLayer) * len(self.outputLayer))
         counter = 0
-        while counter < inputLayerLen:
+        neuronCounter = 0
+        weightCounter = 0
+        while counter < inputLayerWeights:
             self.inputLayer[counter].weights[0] = self.weightsVector[counter]
             counter = counter + 1
-        while counter < hiddenLayerLen * inputLayerLen:
-            neuronCounter = 0
-            weightCounter = 0
-            self.hiddenLayer[neuronCounter].weights[weightCounter] = self.weightsVector[counter]
+        while neuronCounter < len(self.hiddenLayer):
+            while weightCounter < len(self.hiddenLayer[0].weights):
+                self.hiddenLayer[neuronCounter].weights[weightCounter] = self.weightsVector[counter]
+                weightCounter = weightCounter + 1
+                counter = counter + 1
             neuronCounter = neuronCounter + 1
-            weightCounter = weightCounter + 1
-            if neuronCounter == hiddenLayerLen:
-                neuronCounter = 0
-            if weightCounter == inputLayerLen:
-                weightCounter = 0
-            counter = counter + 1
-        while counter < hiddenLayerLen * outputLayerLen:
-            neuronCounter = 0
             weightCounter = 0
-            self.outputLayer[neuronCounter].weights[weightCounter] = self.weightsVector[counter]
-            neuronCounter = neuronCounter + 1
-            weightCounter = weightCounter + 1
-            if neuronCounter == hiddenLayerLen:
-                neuronCounter = 0
-            if weightCounter == inputLayerLen:
-                weightCounter = 0
+        weightCounter = 0
+        while weightCounter < len(self.outputLayer[0].weights):
+            self.outputLayer[0].weights[weightCounter] = self.weightsVector[counter]
             counter = counter + 1
+            weightCounter = weightCounter + 1
 
     def displayInputLayer(self):
         for neuron in self.inputLayer:
