@@ -15,8 +15,6 @@ class Network:
 
     def updateNetwork(self):
         inputLayerWeights = len(self.inputLayer)
-        hiddenLayerWeights = (inputLayerWeights + (len(self.hiddenLayer) * len(self.inputLayer)))
-        outputLayerWeights = hiddenLayerWeights + (len(self.hiddenLayer) * len(self.outputLayer))
         counter = 0
         neuronCounter = 0
         weightCounter = 0

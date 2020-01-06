@@ -1,75 +1,99 @@
-    def crossover(self):
-        counter = 0
-        crossoverGeneration = []
-        bestInstance = self.getBestInstance()
-        crossoverGeneration.append(bestInstance)
-        self.population.remove(bestInstance)
-        secondBestInstance = self.getBestInstance()
-        crossoverGeneration.append(secondBestInstance)
-        self.population.append(bestInstance)
-        while counter < (self.populationSize - 2) / 2:
-            offspring = self.breed()
-            for instance in offspring:
-                instance = self.mutate(instance)
-                crossoverGeneration.append(instance)
-            counter = counter + 1
-        self.population = crossoverGeneration
-
-    def breed(self):
-        candidates = random.choices(self.population, k=6)
-        firstCandidate = candidates[0]
-        for candidate in candidates:
-            if candidate.outputLayer[0].accumulatedError < firstCandidate.outputLayer[0].accumulatedError:
-                firstCandidate = candidate
-        candidates.remove(firstCandidate)
-        secondCandidate = candidates[0]
-        for candidate in candidates:
-            if candidate.outputLayer[0].accumulatedError < secondCandidate.outputLayer[0].accumulatedError:
-                secondCandidate = candidate
-
-        offspring = self.makeOffspring(firstCandidate, secondCandidate)
-        return offspring
-
-    @staticmethod
-    def makeOffspring(firstCandidate, secondCandidate):
-        offspring = firstCandidate
-        secondOffspring = secondCandidate
-        neuronCounter = 0
-        weightCounter = 0
-        while neuronCounter < len(offspring.inputLayer):
-            while weightCounter < len(offspring.inputLayer[neuronCounter].weights):
-                rd = random.random()
-                if rd > 0.5:
-                    firstWeight = offspring.inputLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondOffspring.inputLayer[neuronCounter].weights[weightCounter]
-                    offspring.inputLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondOffspring.inputLayer[neuronCounter].weights[weightCounter] = firstWeight
-                weightCounter = weightCounter + 1
-            weightCounter = 0
-            neuronCounter = neuronCounter + 1
-        neuronCounter = 0
-        while neuronCounter < len(offspring.hiddenLayer):
-            while weightCounter < len(offspring.hiddenLayer[neuronCounter].weights):
-                rd = random.random()
-                if rd > 0.5:
-                    firstWeight = offspring.hiddenLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondOffspring.hiddenLayer[neuronCounter].weights[weightCounter]
-                    offspring.hiddenLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondOffspring.hiddenLayer[neuronCounter].weights[weightCounter] = firstWeight
-                weightCounter = weightCounter + 1
-            weightCounter = 0
-            neuronCounter = neuronCounter + 1
-        neuronCounter = 0
-        while neuronCounter < len(offspring.outputLayer):
-            while weightCounter < len(offspring.outputLayer[neuronCounter].weights):
-                rd = random.random()
-                if rd > 0.5:
-                    firstWeight = offspring.outputLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondOffspring.outputLayer[neuronCounter].weights[weightCounter]
-                    offspring.outputLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondOffspring.outputLayer[neuronCounter].weights[weightCounter] = firstWeight
-                weightCounter = weightCounter + 1
-            weightCounter = 0
-            neuronCounter = neuronCounter + 1
-        offspringList = [offspring, secondOffspring]
-        return offspringList
+0.5443225668520135
+-4.248756677071407
+-2.858575199633404
+4.821295112451875
+1.6933782199284666
+-1.907749917436762
+-2.7175080222837398
+-4.572643966050718
+1.1267078621765076
+2.394871247071201
+0.8685554395716686
+-3.8383463308658063
+-2.567540323092752
+1.187744400573565
+3.4836569405040763
+-1.3954035501613946
+-1.6227828703831628
+-3.3315907851197
+1.6560030561212216
+-4.3185496502358545
+3.988742896722661
+-0.2214670627955675
+1.6504327726166874
+2.938950891217786
+1.1061204729323126
+1.8010410075792347
+-2.882013938770489
+2.1234365037454026
+1.6849922274038533
+-0.6839216186516417
+-1.4746382110402703
+-0.7732239562446086
+3.058709522535482
+-1.2272191562737622
+2.8115458703321057
+-1.0492533486424782
+-1.096816377066978
+2.4599516691135923
+-0.7678359436172446
+-3.027048139237306
+1.2911864722185733
+2.22159095743333
+3.349166230726828
+0.9344027565637028
+-1.0506990101279499
+3.3801475553321936
+-4.601303222710627
+-0.4930941331290146
+-2.8021599440971556
+-2.659757537631733
+-2.8376713735849037
+-2.506841027799007
+4.198124189226146
+-4.555735505095888
+-4.880690565055685
+-4.935037728501985
+3.2754217224504583
+-1.5049303625185284
+2.690655382366187
+-1.762908572179045
+-0.40495587134355393
+-0.9251092291700331
+4.810348571645491
+-3.6674144615019033
+-4.020276982512097
+-1.4980786692648063
+0.4771252123717451
+-4.23602649779741
+3.046240860370112
+1.4953733676170513
+-4.06073295054895
+-1.9747561969776681
+-0.7659163725604365
+1.7603549275916865
+0.4720864977406567
+-3.4424253461956313
+2.1441459874462634
+-0.7811713454012557
+-3.512118943481428
+0.7795766523315129
+-1.7600910963760508
+2.543054712649524
+2.711650250183374
+1.001921616473787
+-0.9613488452977386
+0.42455820682936896
+2.7388181217327574
+3.285485277383124
+0.9572964043257537
+-1.5410953837387442
+-2.815415885137446
+4.352812633982605
+0.6904948037534409
+-4.224214396542965
+4.8358039310951835
+2.788995490236708
+0.27084851650873887
+-2.9807525461423925
+-3.155087890580531
