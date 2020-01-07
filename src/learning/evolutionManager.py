@@ -63,7 +63,7 @@ class EvolutionManager:
 
     def breed(self):
         tmpPopulation = self.population
-        randomList = random.sample(range(1, len(tmpPopulation)), 6)
+        randomList = random.sample(range(2, (len(tmpPopulation) - 1)), 6)
         candidates = []
         for element in randomList:
             candidates.append(tmpPopulation[element])
