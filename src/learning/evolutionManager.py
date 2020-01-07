@@ -57,16 +57,16 @@ class EvolutionManager:
         while len(tmpPopulation) < self.populationSize:
             offspring = self.breed()
             for instance in offspring:
-                instance = self.mutate(instance)
+                rd = random.random()
+                if rd < self.mutationChance:
+                    # ???
+                    instance = self.mutate(instance)
                 tmpPopulation.append(instance)
+
         self.population = tmpPopulation
 
     def breed(self):
-        tmpPopulation = self.population
-        randomList = random.sample(range(2, (len(tmpPopulation) - 1)), 6)
-        candidates = []
-        for element in randomList:
-            candidates.append(tmpPopulation[element])
+        candidates = random.choices(self.population, k=6)
         firstCandidate = candidates[0]
         for candidate in candidates:
             if candidate.outputLayer[0].accumulatedError < firstCandidate.outputLayer[0].accumulatedError:
@@ -76,8 +76,9 @@ class EvolutionManager:
         for candidate in candidates:
             if candidate.outputLayer[0].accumulatedError < secondCandidate.outputLayer[0].accumulatedError:
                 secondCandidate = candidate
-
-        offspring = self.makeOffspring(firstCandidate, secondCandidate)
+        # ???
+        # offspring = self.makeOffspring(firstCandidate, secondCandidate)
+        offspring = [firstCandidate, secondCandidate]
         return offspring
 
     @staticmethod
@@ -85,15 +86,12 @@ class EvolutionManager:
         neuronCounter = 0
         weightCounter = 0
         while neuronCounter < len(firstCandidate.inputLayer):
-            while weightCounter < len(firstCandidate.inputLayer[neuronCounter].weights):
-                rd = random.random()
-                if rd > 0.5:
-                    firstWeight = firstCandidate.inputLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondCandidate.inputLayer[neuronCounter].weights[weightCounter]
-                    firstCandidate.inputLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondCandidate.inputLayer[neuronCounter].weights[weightCounter] = firstWeight
-                weightCounter = weightCounter + 1
-            weightCounter = 0
+            rd = random.random()
+            if rd > 0.5:
+                firstWeight = firstCandidate.inputLayer[neuronCounter].weights[0]
+                secondWeight = secondCandidate.inputLayer[neuronCounter].weights[0]
+                firstCandidate.inputLayer[neuronCounter].weights[0] = secondWeight
+                secondCandidate.inputLayer[neuronCounter].weights[0] = firstWeight
             neuronCounter = neuronCounter + 1
         neuronCounter = 0
         while neuronCounter < len(firstCandidate.hiddenLayer):
@@ -122,20 +120,19 @@ class EvolutionManager:
         offspringList = [firstCandidate, secondCandidate]
         return offspringList
 
-    def mutate(self, network):
+    @staticmethod
+    def mutate(network):
         rd = random.random()
-        if rd <= self.mutationChance:
-            rd = random.random()
-            if rd >= 94:
-                weightId = random.randint(0, len(network.outputLayer[0].weights) - 1)
-                network.outputLayer[0].weights[weightId] = random.uniform(-5, 5)
-            if 46 < rd < 94:
-                weightId = random.randint(0, (len(network.hiddenLayer[0].weights) - 1))
-                neuronId = random.randint(0, (len(network.hiddenLayer) - 1))
-                network.hiddenLayer[neuronId].weights[weightId] = random.uniform(-5, 5)
-            else:
-                neuronId = random.randint(0, (len(network.inputLayer) - 1))
-                network.inputLayer[neuronId].weights[0] = random.uniform(-5, 5)
+        if rd >= 94:
+            weightId = random.randint(0, len(network.outputLayer[0].weights) - 1)
+            network.outputLayer[0].weights[weightId] = random.uniform(-5, 5)
+        if 46 < rd < 94:
+            weightId = random.randint(0, (len(network.hiddenLayer[0].weights) - 1))
+            neuronId = random.randint(0, (len(network.hiddenLayer) - 1))
+            network.hiddenLayer[neuronId].weights[weightId] = random.uniform(-5, 5)
+        else:
+            neuronId = random.randint(0, (len(network.inputLayer) - 1))
+            network.inputLayer[neuronId].weights[0] = random.uniform(-5, 5)
         return network
 
     def getBestInstance(self):
