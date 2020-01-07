@@ -77,62 +77,30 @@ class EvolutionManager:
             if candidate.outputLayer[0].accumulatedError < secondCandidate.outputLayer[0].accumulatedError:
                 secondCandidate = candidate
         # ???
-        # offspring = self.makeOffspring(firstCandidate, secondCandidate)
-        offspring = [firstCandidate, secondCandidate]
+        offspring = self.makeOffspring(firstCandidate, secondCandidate)
+        # offspring = [firstCandidate, secondCandidate]
         return offspring
 
     @staticmethod
     def makeOffspring(firstCandidate, secondCandidate):
-        neuronCounter = 0
-        weightCounter = 0
-        while neuronCounter < len(firstCandidate.inputLayer):
-            rd = random.random()
-            if rd > 0.5:
-                firstWeight = firstCandidate.inputLayer[neuronCounter].weights[0]
-                secondWeight = secondCandidate.inputLayer[neuronCounter].weights[0]
-                firstCandidate.inputLayer[neuronCounter].weights[0] = secondWeight
-                secondCandidate.inputLayer[neuronCounter].weights[0] = firstWeight
-            neuronCounter = neuronCounter + 1
-        neuronCounter = 0
-        while neuronCounter < len(firstCandidate.hiddenLayer):
-            while weightCounter < len(firstCandidate.hiddenLayer[neuronCounter].weights):
-                rd = random.random()
-                if rd > 0.5:
-                    firstWeight = firstCandidate.hiddenLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondCandidate.hiddenLayer[neuronCounter].weights[weightCounter]
-                    firstCandidate.hiddenLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondCandidate.hiddenLayer[neuronCounter].weights[weightCounter] = firstWeight
-                weightCounter = weightCounter + 1
-            weightCounter = 0
-            neuronCounter = neuronCounter + 1
-        neuronCounter = 0
-        while neuronCounter < len(firstCandidate.outputLayer):
-            while weightCounter < len(firstCandidate.outputLayer[neuronCounter].weights):
-                rd = random.random()
-                if rd > 0.5:
-                    firstWeight = firstCandidate.outputLayer[neuronCounter].weights[weightCounter]
-                    secondWeight = secondCandidate.outputLayer[neuronCounter].weights[weightCounter]
-                    firstCandidate.outputLayer[neuronCounter].weights[weightCounter] = secondWeight
-                    secondCandidate.outputLayer[neuronCounter].weights[weightCounter] = firstWeight
-                weightCounter = weightCounter + 1
-            weightCounter = 0
-            neuronCounter = neuronCounter + 1
+        tmpVector = secondCandidate.weightsVector
+        counter = 0
+        while counter < len(tmpVector):
+            r = random.random()
+            if r > 0.5:
+                secondCandidate.weightsVector[counter] = firstCandidate.weightsVector[counter]
+                firstCandidate.weightsVector[counter] = tmpVector[counter]
+            counter = counter + 1
+        firstCandidate.updateNetwork()
+        secondCandidate.updateNetwork()
         offspringList = [firstCandidate, secondCandidate]
         return offspringList
 
     @staticmethod
     def mutate(network):
-        rd = random.random()
-        if rd >= 94:
-            weightId = random.randint(0, len(network.outputLayer[0].weights) - 1)
-            network.outputLayer[0].weights[weightId] = random.uniform(-5, 5)
-        if 46 < rd < 94:
-            weightId = random.randint(0, (len(network.hiddenLayer[0].weights) - 1))
-            neuronId = random.randint(0, (len(network.hiddenLayer) - 1))
-            network.hiddenLayer[neuronId].weights[weightId] = random.uniform(-5, 5)
-        else:
-            neuronId = random.randint(0, (len(network.inputLayer) - 1))
-            network.inputLayer[neuronId].weights[0] = random.uniform(-5, 5)
+        randomWeight = random.randrange(0, (len(network.weightsVector) - 1))
+        network.weightsVector[randomWeight] = random.uniform(-5, 5)
+        network.updateNetwork()
         return network
 
     def getBestInstance(self):
