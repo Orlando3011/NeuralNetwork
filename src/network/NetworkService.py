@@ -31,6 +31,15 @@ class NetworkService:
             else:
                 outputNeuron.accumulatedError = outputNeuron.accumulatedError + outputNeuron.output
 
+    @staticmethod
+    def checkAnswer(network, correctAnswer):
+        result = network.outputLayer[0].output
+        difference = correctAnswer - result
+        if -0.5 < difference < 0.5:
+            return 1
+        else:
+            return 0
+
     def solveTask(self, network, data):
         self.loadData(network, data)
         self.proceedData(network)
@@ -41,3 +50,11 @@ class NetworkService:
         for data in dataList:
             self.solveTask(network, data)
             self.checkOutput(network, data[10])
+
+    def testNetwork(self, network, dataList):
+        correctAnswers = 0
+        network.resetError()
+        for data in dataList:
+            self.solveTask(network, data)
+            correctAnswers = correctAnswers + self.checkAnswer(network, data[10])
+        return correctAnswers

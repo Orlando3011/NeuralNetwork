@@ -59,7 +59,6 @@ class EvolutionManager:
             for instance in offspring:
                 rd = random.random()
                 if rd < self.mutationChance:
-                    # ???
                     instance = self.mutate(instance)
                 tmpPopulation.append(instance)
 
@@ -76,9 +75,7 @@ class EvolutionManager:
         for candidate in candidates:
             if candidate.outputLayer[0].accumulatedError < secondCandidate.outputLayer[0].accumulatedError:
                 secondCandidate = candidate
-        # ???
         offspring = self.makeOffspring(firstCandidate, secondCandidate)
-        # offspring = [firstCandidate, secondCandidate]
         return offspring
 
     @staticmethod

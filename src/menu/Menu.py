@@ -20,7 +20,8 @@ class Menu:
                   "\n1. Use evolutionary algorithm to generate network"
                   "\n2. Load saved network from .txt file"
                   "\n3. Manually test network (if no network is loaded, system will use random one)"
-                  "\n4. Exit program")
+                  "\n4. Auto test loaded network with test dataset"
+                  "\n5. Exit program")
             result = input()
             if result == '1':
                 self.evolutionaryMenu()
@@ -31,7 +32,10 @@ class Menu:
             if result == '3':
                 self.testMenu()
                 result = '0'
-            if result == '4':
+            if result == "4":
+                self.autoTestMenu()
+                result = "0"
+            if result == '5':
                 sys.exit()
             if result == '0':
                 pass
@@ -53,7 +57,7 @@ class Menu:
 
     @staticmethod
     def doAlgorithm(populationSize, generations, mutation, fileName):
-        dataManager = DataManager("learningData.txt")
+        dataManager = DataManager("learningData.csv")
         evolutionManager = EvolutionManager(populationSize, generations, mutation)
         outputData = evolutionManager.proceedAlgorithm(dataManager.dataList, fileName)
         plottingService = PlottingService()
@@ -90,6 +94,13 @@ class Menu:
         print("Network proceeded data! Output is: ")
         print(output)
 
+    def autoTestMenu(self):
+        dataManager = DataManager("testData.csv")
+        networkService = NetworkService()
+        correctAnswers = networkService.testNetwork(self.network, dataManager.dataList)
+        print("Test finished! Out of 50 records, network classified correctly:")
+        print(correctAnswers)
+        print("of them.")
 
 
 
