@@ -81,6 +81,8 @@ class Menu:
                   "\nType 1 to go back"
                   "\nMind that the last element of the list is the result network will try to reach - do not input it!")
             data = input()
+            if data == '1':
+                break
             data = data.replace('"', '')
             dataList = list(data.split(','))
             for data in dataList:
